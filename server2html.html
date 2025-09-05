@@ -406,7 +406,7 @@ opacity: 1;
 </div>
 </div>
 <script>
-    const socket = new WebSocket("ws://" + location.host);
+    const socket = new WebSocket((location.protocol === "https:" ? "wss://" : "ws://") + location.host);
     socket.onopen = () => {
         const name = sessionStorage.getItem("username");
         if (name) {
@@ -878,3 +878,4 @@ else if(msg.text&&msg.from){
 </script>
 </body>
 </html>
+
