@@ -2,6 +2,7 @@ const http = require('http');
 const websocket = require('ws');
 const readline = require('readline');
 const fs = require('fs');
+const path = require('path');
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
@@ -11,14 +12,14 @@ const server = http.createServer(function (req, res) {
   let filepath = "";
 
   if (req.url === "/" || req.url === "/log") {
-    filepath = '/home/puskar-banerjee/WebstormProjects/untitled2/loginpage.html';
+    filepath = path.join(__dirname,"loginpage.html");
   } else if (req.url === "/chat") {
-    filepath = '/home/puskar-banerjee/WebstormProjects/untitled2/server2html.html';
+    filepath = path.join(__dirname,"server2html.html");
   } else if (req.url === "/picture.jpg") {
-    filepath = '/home/puskar-banerjee/WebstormProjects/untitled2/picture.jpg';
+    filepath = path.join(__dirname,"picture.jpg");
   }
   else if(req.url === "/letter-p.gif") {
-      filepath = '/home/puskar-banerjee/WebstormProjects/untitled2/letter-p.gif';
+      filepath = path.join(__dirname,"letter-p.gif");
   } else {
     res.writeHead(404, { 'content-type': 'text/plain' });
     res.write('404 path not found');
@@ -276,3 +277,4 @@ wss.on("connection", (ws) => {
 server.listen(8080, () => {
   console.log("Server is running on http://localhost:8080");
 });
+
