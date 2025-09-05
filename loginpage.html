@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html>
+<head href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"><title>LOGIN PAGE</title></head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<body style="font-family:Inter,sans-serif;display:flex;justify-content:center;align-items:center;height: 100vh;background:url('/picture.jpg');background-repeat:no-repeat;background-size:cover;background-position:center;background-attachment:fixed;">
+<div style="text-align:center;">
+<h1><span style="background-color:rgba(255,255,255,0.4);color:red;">TYPE YOUR USERNAME HERE</span></h1>
+<br>
+<div style="background-color:lightpink;backdrop-filter:blur(10px);padding:20px;display:inline-block;">
+<input id="ip" placeholder="enter your username">
+<button onclick="f1()">send</button>
+<button onclick="f2()">clear</button>
+</div>
+</div>
+<script>
+function f1() {
+  let m = document.getElementById ("ip");
+  if (m.value === "") {
+    alert("Please enter a username.");
+    return;
+  }
+
+  let socket = new WebSocket("ws://" + location.host);
+
+  socket.onopen = () => {
+    socket.send(JSON.stringify({
+      type: "loginCheck",
+      username: m.value
+    }));
+  };
+
+  socket.onmessage = (event) => {
+    let msg = JSON.parse(event.data);
+    if (msg.hasOwnProperty("check")) {
+      if (msg.check === null) {
+        alert(msg.text);
+        socket.close();
+      } else {
+        sessionStorage.setItem("username", m.value);
+        socket.close();
+        location.href = "/chat";
+      }
+    }
+  };
+}
+
+function f2() {
+  document.getElementById("ip").value = "";
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,880 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"><title>WebSocket experiment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+font-family: Inter,sans-serif;
+}
+.btn {
+  border:none;
+outline:none;
+  background-color: #ff9999;
+  border-radius: 10px;
+  animation: slideUpFade 0.5s ease-out;
+}
+.btn:hover {
+    filter: drop-shadow(0 0 5px antiquewhite );
+  background-color: #ff6666;
+transform: scale(1.03);
+transition: all 0.5s ease-in-out;
+}
+.userbtn{
+background-color: rgba(220, 248, 198, 0.6);
+backdrop-filter:blur(10px);
+border-radius: 5px;
+border:none;
+outline:none;
+animation: slideUpFade 0.5s ease-out;
+}
+.userbtn:hover{
+background-color: rgba(190, 230, 170, 0.8);
+transform: scale(1.03);
+transition: all 0.2s ease-in-out;
+}
+#divid {
+    position: relative;
+  display:flex;
+  flex-direction:column-reverse;
+  align-items: stretch;
+  background: linear-gradient(to right, #ff7e5f, #feb47b);
+  backdrop-filter: blur(6px);
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  height: 70vh;
+  left: 0;
+  overflow-y: scroll;
+  padding-right: 15px;
+  box-sizing: content-box;
+  width:30vw;
+box-shadow: 0 0 10px rgba(0,0,0,0.5);
+animation: slideUpFade 0.5s ease-out;
+
+}
+#urlst,#imglst,#activePartnerList {
+    position: fixed;
+    top:0;
+    left: -50%;
+    width: 20%;
+    height:100vh;
+    z-index:1001;
+    bottom:30px;
+    backdrop-filter:blur(8px);
+ border: 2px solid #aaa;
+ border-radius: 10px;
+box-shadow: 0 0 10px rgba(0,0,0,0.5);
+padding: 15px;
+overflow-y:scroll;
+transition: left 0.5s ease-in-out;
+animation: slideUpFade 0.2s ease-out;
+}
+#urlst.visible,#imglst.visible,#activePartnerList.visible {
+    left:0;
+}
+#divid::-webkit-scrollbar,#urlst::-webkit-scrollbar {
+  width: 15px;
+animation: slideLeft 0.5s ease-out;
+
+}
+#divid::-webkit-scrollbar-track,#urlst::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.5);
+  border: 2px solid black;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+#divid::-webkit-scrollbar-thumb,#urlst::-webkit-scrollbar-thumb {
+  background: #ff9999;
+  border: 1px solid white;
+  border-radius: 10px;
+}
+#divid::-webkit-scrollbar-thumb:hover,#urlst::-webkit-scrollbar-thumb:hover {
+  background: #ff6666;
+}
+.outerbox{
+height:auto;
+animation: slideUpFade 0.5s ease-out;
+}
+.heading{
+animation: slideUpFade 0.5s ease-out;
+}
+.sp{
+padding:20px;
+}
+@media(max-width: 768px){
+#divid{
+width:50vw;
+height:60vh;
+overflow-y: scroll;
+animation: slideUpFade 0.5s ease-out;
+}
+#urlst,#imglst,#activePartnerList{
+    left:-50%;
+width:40%;
+height:90vh;
+    z-index: 1001;
+overflow-y: scroll;
+    backdrop-filter: blur(8px);
+animation: slideUpFade 0.5s ease-out;
+position: fixed;
+    bottom:30px;
+}
+#divid::-webkit-scrollbar,#urlst::-webkit-scrollbar {
+  width: 15px;
+animation: slideLeft 0.5s ease-out;
+}
+#divid::-webkit-scrollbar-track,#urlst::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.5);
+  border: 2px solid black;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+#divid::-webkit-scrollbar-thumb,#urlst::-webkit-scrollbar-thumb {
+  background: #ff9999;
+  border: 1px solid white;
+  border-radius: 10px;
+}
+#divid::-webkit-scrollbar-thumb:hover,#urlst::-webkit-scrollbar-thumb:hover {
+  background: #ff6666;
+}
+.maincontainer{
+flex-direction:column;
+gap:5px;
+width: 90vw;
+height: auto;
+}
+.outerbox{
+height: auto;
+padding: 10px;
+animation: slideUpFade 0.5s ease-out;
+}
+.heading{
+width:100%;
+height:auto;
+text-align:center;
+font-size:1.2rem;
+display:flex;
+justify-content:center;
+animation: slideUpFade 0.5s ease-out;
+}
+.sp{
+padding:10px;
+}
+}
+@keyframes slideUpFade{
+from{
+transform: translateY(20px);
+opacity: 0;
+}
+to{
+transform: translateY(0);
+opacity: 1;
+}
+}
+@keyframes slideRight{
+from{
+transform: translateX(-20px);
+opacity: 0;
+}
+to{
+transform:translateX(0);
+opacity: 1;
+}
+}
+@keyframes slideLeft{
+from{
+transform: translate(20px);
+opacity: 0;
+}
+to{
+transform: translate(0);
+opacity: 1;
+}
+}
+@keyframes fadeOut{
+    to{
+       opacity: 0;
+        visibility: hidden;
+    }
+}
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 5px #fff;}
+    50% { box-shadow: 0 0 15px #ff9999; }
+    100% { box-shadow: 0 0 5px #fff; }
+}
+.glow-notify{
+    animation: pulseGlow 1.2s infinite;
+}
+.me{
+    background-color : #82d73f;
+    padding : 2px;
+    border-radius : 10px;
+    display : inline-block;
+    word-wrap : break-word;
+    overflow-wrap : break-word;
+    white-space : pre-wrap;
+    max-width : 40%;
+    margin : 8px 0;
+    align-self : flex-end;
+    animation: slideLeft 0.4s ease-out;
+}
+.them{
+    animation: slideRight 0.4s ease-out;
+    padding : 2px;
+    border-radius : 10px;
+    display : inline-block;
+    word-wrap : break-word;
+    overflow-wrap : break-word;
+    white-space : pre-wrap;
+    max-width : 40%;
+    margin : 8px 0;
+}
+.serverMsg{
+    background-color : rgba(230,147,147,0.5);
+    align-self : center;
+    max-width : 70%;
+}
+.theirMsg{
+    background-color : #ffffff;
+    align-self : flex-start;
+}
+.theirMsgImg{
+    max-width : 150px;
+    border-radius : 10px;
+    margin : 8px 0;
+    align-self : flex-start;
+}
+.myMsgImg{
+    max-width : 150px;
+    border-radius : 10px;
+    margin : 8px 0;
+    align-self : flex-end;
+}
+.cfm{
+    display:none;position:fixed;
+    box-shadow:0 0 10px rgba(0,0,0,0.3);
+    z-index:1010;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background-color:white;
+    border-radius:10px;
+    padding:20px;
+}
+.overlay{
+    display:none;
+    position:fixed;
+    z-index:1000;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background-color:rgba(0,0,0,0.5);
+    pointer-events:auto;
+    backdrop-filter:blur(5px);
+}
+#ip {
+    width:90%;
+    min-height:40px;
+    max-height:200px;
+    resize:none;
+    overflow-y: auto;
+    border-radius: 10px;
+    border:none;
+    outline:none;
+    font-family: Inter, Sans-Serif;
+    font-size:1.2rem;
+    spellcheck: true;
+    background-color: antiquewhite;
+    transition: all 0.3s ease-in-out;
+    animation: slideUpFade 0.5s ease-out;
+}
+.msgbox{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:fixed;
+    z-index:999;
+    bottom:20px;
+    left:50%;
+    width:60%;
+    transform:translate(-50%);
+    background-color:rgba(0,0,0,0.4);
+    backdrop-filter:blur(5px);
+    padding:20px 50px;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.25);
+    animation: slideUpFade 0.5s ease-out;
+    border-radius: 10px;
+}
+.time{
+    font-size:0.5rem;
+    text-align:right;
+    color: darkred;
+    margin-top: 2px;
+    padding-right: 4px;
+}
+.date{
+    text-align:center;
+    font-size: 0.8rem;
+    position: sticky;
+    top:4px;
+    z-index: 5;
+    align-self: center;
+    display: inline-block;
+    background-color:white;
+    border-radius:10px;
+    margin: 10px auto;
+    padding:4px 15px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.25);
+    animation: slideUpFade 0.5s ease-out;
+}
+.splashScreen{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+    background-color:rgba(255,245,230,0.5);
+    backdrop-filter:blur(5px);
+    font-family: Inter, Sans-Serif;
+    z-index:2000;
+}
+</style>
+</head>
+<body style="display:flex;align-items:center;justify-content:center;background:url('picture.jpg');background-repeat:no-repeat;background-size:cover;background-position:center;background-attachment:fixed;">
+<div id="splash" class="splashScreen">
+    <div style="font-size: 4rem; margin-bottom: 10px;"><img src="letter-p.gif" alt="an animated icon" style="heiight:100px;width: 100px"></div>
+    <h1 style="font-size: 2rem; margin: 5px;">PuskarApp</h1>
+    <p style="font-size: 1rem; color: darkblue;">v2.5</p>
+</div>
+<div id="main" style="display:none;">
+    <div id="imgModal" class="overlay" style="display: none;">
+        <img id ="modalImage" style="max-width:90%;max-height:90%;border-radius:10px;box-shadow:0 0 20px white">
+    </div>
+<div class="msgbox" >
+    <input id="sendImage" type="file" accept="image/*" style="display:none;">
+    <div style="display: flex; flex-direction: row;">
+    <img alt="prev" id="imgPreview" style="display:none;border-radius: 10px;max-width:120px;max-height:120px;align-self:flex-start;">
+    <button id="clearImg" class="btn" title="clear image" style="display:none;top:0;right:0"><i class="fas fa-times"></i></button>
+    </div>
+    <textarea id="ip" placeholder="type your message"></textarea>
+    <div style="flex-direction: row;padding-top:5px;align-self:center;">
+        <button class="btn" title="send" onclick="f1()"><i class="fas fa-paper-plane"></i></button>
+        <button class="btn" title="clear" onclick="f2()"><i class="fas fa-eraser"></i></button>
+        <button id ="sendImageButton" class="btn" title="send image" onclick="document.getElementById('sendImage').click()"><i class="fas fa-image"></i></button>
+    </div>
+</div>
+<div style="display:flex;flex-direction:column;align-items: center;">
+    <button id="toggleBtn" title="show user list" class="btn" style="top:20px;left:20px;position:fixed;" ><i style="z-index: 1001;" id="toggleIcon" class="fas fa-users"></i></button>
+    <button id="toggleBtnImg" title="show image list" class="btn" style="top:50px;left:21px;position:fixed;" ><i style="z-index: 1001;" id="toggleIconImg"  class="fas fa-image"></i></button>
+    <button id ="toggleBtnPartner" title="show partner list" class="btn" style="top:80px;left:21px;position:fixed;"><i style="z-index: 1001;" id="toggleIconPartner" class="fas fa-users"></i></button>
+    <div id="urlst">
+    <div id="listDisable" class="overlay"></div>
+</div>
+    <div id="activePartnerList"></div>
+    <div id="imglst"></div>
+    </div>
+<div id="overlay" class = "overlay"></div>
+<div style="text-align:center;">
+<h1 class="heading" ><span id = "head" class="sp" style="color:#dce3f2;background-color:rgba(255,255,255,0.4);backdrop-filter:blur(10px);"></span></h1>
+<div class="outerbox" style="display:inline-block;padding:20px;">
+<div class="maincontainer" style="display:flex;gap:30px;height:80vh;overflow:hidden;width:55vw;align-self: center;">
+<div id="divid">
+    <button id="backBtn" class="btn" style="display: none;"></button>
+    <div id="privateChatContainer" style="display: none"></div>
+</div>
+</div>
+</div>
+</div>
+<div id="confirm" class="cfm" style="">
+    <p id="confirmText"></p>
+    <button class="btn" id="yes">accept</button>
+    <button class="btn" id="no">reject</button>
+</div>
+<div id="alert" class="cfm">
+    <p id="alertText"></p>
+    <button class="btn" id="ok">ok</button>
+</div>
+<div id="notif" class="cfm">
+    <p id="notifText"></p>
+</div>
+</div>
+<script>
+    const socket = new WebSocket("ws://" + location.host);
+    socket.onopen = () => {
+        const name = sessionStorage.getItem("username");
+        if (name) {
+            socket.send(JSON.stringify({
+                type: "login",
+                username: name
+            }));
+        }
+    };
+    let btnInUse = null;
+    let isPrivateChat = false;
+    let isPrivateChatPartner = false;
+    const imgModal = document.getElementById("imgModal");
+    const modalImage = document.getElementById("modalImage");
+    const sendImage = document.getElementById('sendImage');
+    const sendImageButton = document.getElementById('sendImageButton');
+    const imgPreview = document.getElementById('imgPreview');
+    const clearImg = document.getElementById('clearImg');
+    let Base64 = null;
+    function enLarge(img) {
+        img.addEventListener('click', function () {
+            imgModal.style.display = "block";
+            modalImage.src = img.src;
+        });
+    }
+    document.addEventListener('click', function (e) {
+        if (imgModal.style.display === "block"&&!modalImage.contains(e.target)) {
+            imgModal.style.display = "none";
+            modalImage.src = null;
+        }
+    });
+    clearImg.addEventListener('click', () => {
+        imgPreview.src = '';
+        imgPreview.style.display = 'none';
+        clearImg.style.display = 'none';
+        Base64 = null;
+    });
+    sendImage.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        if (file) {
+            reader.onload = (e) => {
+                imgPreview.src = e.target.result;
+                Base64 = e.target.result;
+                imgPreview.style.display = 'block';
+                clearImg.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    setTimeout(function(){
+        document.getElementById("splash").style.display = "none";
+        document.getElementById("main").style.display = "block";
+    },3000);
+    const date = document.createElement("div");
+    const chatContainer = document.getElementById("divid");
+    const autoScroll = document.createElement("button");
+    autoScroll.classList.add("btn");
+    autoScroll.style.zIndex = "6";
+    autoScroll.style.position = "sticky";
+    autoScroll.style.bottom = "0";
+    autoScroll.style.alignSelf = "center";
+    autoScroll.style.display = "none";
+    const i = document.createElement("i");
+    i.className = "fas fa-arrow-down";
+    autoScroll.appendChild(i);
+    chatContainer.prepend(autoScroll);
+    chatContainer.addEventListener("scroll", () => {
+       const bottom = chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight;
+       autoScroll.style.display = (bottom>0) ? "block" : "none";
+    });
+    autoScroll.addEventListener("click", () => {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    });
+    date.className = "date";
+    const cont = new Date().toLocaleString();
+    date.textContent = cont;
+    //socket.send(JSON.stringify({type:"dateStamp",content:cont}));
+    document.getElementById("divid").prepend(date);
+    function timeStamp(p){
+        const time = document.createElement("div");
+        time.classList.add("time");
+        time.textContent = new Date().toLocaleTimeString([],{hour: '2-digit', minute: '2-digit'});
+        p.appendChild(time);
+    }
+    const userLst = document.getElementById('urlst');
+    const imgLst = document.getElementById('imglst');
+    const activePartnerList = document.getElementById('activePartnerList');
+    const toggleIcon = document.getElementById('toggleIcon');
+    const toggleIconImg = document.getElementById('toggleIconImg');
+    const toggleIconPartner = document.getElementById('toggleIconPartner');
+    const overlay = document.getElementById('overlay');
+    function showList(){
+        userLst.classList.add('visible');
+        overlay.style.display = 'block';
+        toggleIcon.className = 'fas fa-times';
+    }
+    function hideList(){
+        userLst.classList.remove('visible');
+        overlay.style.display = 'none';
+        toggleIcon.className = 'fas fa-users';
+    }
+    toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleIcon.classList.remove('glow-notify');
+        if(userLst.classList.contains('visible')){
+            hideList();
+        }else{
+            showList();
+        }
+    });
+    document.addEventListener('click', (e) => {
+        if(userLst.classList.contains('visible')&&e.target!==toggleBtn&&!userLst.contains(e.target)){
+            hideList();
+        }
+    })
+    function showImgList(){
+        imgLst.classList.add('visible');
+        overlay.style.display = 'block';
+        toggleIconImg.className = 'fas fa-times';
+    }
+    function hideImgList(){
+        imgLst.classList.remove('visible');
+        overlay.style.display = 'none';
+        toggleIconImg.className = 'fas fa-image';
+    }
+    toggleBtnImg.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleIconImg.classList.remove('glow-notify');
+        if(imgLst.classList.contains('visible')){
+            hideImgList();
+        }else{
+            showImgList();
+        }
+    });
+    document.addEventListener('click', (e) => {
+        if(imgLst.classList.contains('visible')&&e.target!==toggleBtnImg&&!imgLst.contains(e.target)){
+            hideImgList();
+        }
+    });
+    function showPartnerList(){
+        activePartnerList.classList.add('visible');
+        overlay.style.display = 'block';
+        toggleIconPartner.className = 'fas fa-times';
+    }
+    function hidePartnerList(){
+        activePartnerList.classList.remove('visible');
+        overlay.style.display = 'none';
+        toggleIconPartner.className = 'fas fa-users';
+    }
+    toggleBtnPartner.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleIconPartner.classList.remove('glow-notify');
+        if(activePartnerList.classList.contains('visible')){
+            hidePartnerList();
+        }else{
+            showPartnerList();
+        }
+    });
+    document.addEventListener('click', (e) => {
+        if(activePartnerList.classList.contains('visible')&&e.target!==toggleBtnPartner&&!activePartnerList.contains(e.target)){
+            hidePartnerList();
+        }
+    });
+    //background-color:rgba(176,224,230,0.5);backdrop-filter:blur(10px);
+document.getElementById("head").innerHTML = `HI ${sessionStorage.getItem("username")}, WELCOME TO THE CHAT!`;
+function customConfirm(message,callback){
+    const modal = document.getElementById('confirm');
+    const overlay = document.getElementById('overlay');
+    const confirmText = document.getElementById("confirmText");
+    const yes = document.getElementById("yes");
+    const no = document.getElementById("no");
+    confirmText.textContent = message;
+    modal.style.display = "block";
+    overlay.style.display = "block";
+    yes.onclick = () => {
+        modal.style.display = "none";
+        overlay.style.display = "none";
+        callback(true);
+    }
+    no.onclick = () => {
+        modal.style.display = "none";
+        overlay.style.display = "none";
+        callback(false);
+    }
+}
+function shiftToPrivateChat(){
+    isPrivateChat = true;
+    document.getElementById("backBtn").style.display = "inline-block";
+    const container = document.getElementById("privateChatContainer");
+    container.innerHTML = "";
+
+}
+function customAlert(message,callback){
+    const modal = document.getElementById('alert');
+    const overlay = document.getElementById('overlay');
+    const alertText = document.getElementById("alertText");
+    const ok = document.getElementById("ok");
+    alertText.textContent = message;
+    modal.style.display = "block";
+    overlay.style.display = "block";
+    ok.onclick = () => {
+        modal.style.display = "none";
+        overlay.style.display = "none";
+        callback(true);
+    }
+}
+function f1() {
+    let m = document.getElementById("ip");
+    let sendImage = document.getElementById("sendImage");
+    if (m.value === ""&&sendImage.value === "") {
+        m.value = "nothing entered";
+    } else {
+        const img = document.createElement("img");
+        if (socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({type: "chatmsg", text: m.value, image: Base64}));
+            const p = document.createElement("p");
+            const container = document.createElement("div");
+            container.style.display = "flex";
+            container.style.flexDirection = "column";
+            if (Base64) {
+                img.src = Base64;
+                img.classList.add("me","myMsgImg");
+                timeStamp(img);
+            }
+            p.textContent = "me: " + m.value;
+            p.classList.add("me");
+            timeStamp(p);
+            container.appendChild(p);
+            container.appendChild(img);
+            if(!isPrivateChat||!isPrivateChatPartner) {
+                document.getElementById("divid").prepend(container);
+                document.getElementById("divid").scrollTop = document.getElementById("divid").scrollHeight;
+            }
+        }
+        m.value = "";
+        img.src = "";
+        Base64 = null;
+        imgPreview.src = "";
+        imgPreview.style.display = 'none';
+        clearImg.style.display = 'none';
+    }
+}
+function f2() {
+  document.getElementById("ip").value = "";
+}
+socket.onmessage = (event) => {
+  const msg = JSON.parse(event.data);
+  if(msg.type==="partnerList"){
+      const prtid = document.getElementById("activePartnerList");
+      prtid.innerHTML = "";
+      const h1 = document.createElement("h1");
+      h1.style.fontFamily = "Inter, Sans-Serif"
+      h1.style.color = "white";
+      h1.textContent = "private chat partners:";
+      prtid.appendChild(h1);
+      msg.content.forEach((item) => {
+          toggleIconPartner.classList.add("glow-notify");
+          const container = document.createElement("div");
+          container.style.display = "flex";
+          container.style.flexDirection = "column";
+          container.style.marginBottom = "5px";
+          const bigbtn = document.createElement("button");
+          bigbtn.textContent = item;
+          bigbtn.className = "userbtn";
+          bigbtn.addEventListener("click", () => {
+              socket.send(JSON.stringify({type: "chatLogRequest",user:sessionStorage.getItem("username"),partner:bigbtn.textContent}));
+              const privateChatContainer = document.getElementById("privateChatContainer");
+              privateChatContainer.innerHTML = "";
+          });
+          container.appendChild(bigbtn);
+          prtid.appendChild(container);
+      });
+  }
+  if(msg.type === "userlist"){
+  const unmid = document.getElementById("urlst");
+  unmid.innerHTML = "";
+  const h1 = document.createElement("h1");
+  h1.style.fontFamily = "Inter, Sans-Serif"
+  h1.style.color = "white";
+  h1.textContent = "Users online:";
+  unmid.appendChild(h1);
+  msg.content.forEach(u => {
+  toggleIcon.classList.add("glow-notify");
+  const container = document.createElement("div");
+  container.style.display = "flex";
+  container.style.flexDirection = "column";
+  container.style.marginBottom = "5px";
+  const bigbtn = document.createElement("button");
+  bigbtn.textContent = u;
+  bigbtn.className = "userbtn";
+  bigbtn.onclick = () => {
+      userLst.classList.remove('visible');
+      toggleIcon.className = 'fas fa-users';
+      btnInUse = bigbtn;
+      btnInUse.disabled = true;
+  const notif = document.getElementById("notif");
+  const overlay = document.getElementById("overlay");
+  const notifText = document.getElementById("notifText");
+  notif.style.display = "block";
+  overlay.style.display = "block";
+  overlay.style.zIndex = "1009px";
+  notifText.textContent = `waiting for ${u} to connect`;
+  socket.send(JSON.stringify({type:"connReq",CurrentUser:sessionStorage.getItem("username"),TargetUser:bigbtn.textContent}));
+};
+ container.appendChild(bigbtn);
+  unmid.appendChild(container);
+});
+}
+else if(msg.type==="connect"){
+    console.log(`request received from ${msg.user}`);
+    customConfirm(`private chat request from ${msg.user}`,(chk) => {
+        if(chk){
+            isPrivateChatPartner = true;
+            socket.send(JSON.stringify({type:"connResponse",status:"accepted",CurrentUser: msg.user, TargetUser: sessionStorage.getItem("username")}));
+            const divid = document.getElementById("divid");
+            divid.innerHTML = "";
+            const btn = document.createElement("button");
+            btn.title = "back";
+            btn.style.alignSelf = "flex-start";
+            btn.style.position = "fixed";
+            btn.style.top = "2px";
+            btn.className = "btn";
+            const I = document.createElement("i");
+            I.className = "fas fa-arrow-left";
+            btn.appendChild(I);
+            btn.onclick = () => {
+                isPrivateChatPartner = false;
+                socket.send(JSON.stringify({type:"buttonEnable"}));
+                socket.send(JSON.stringify({type:"modeShift"}));
+                divid.innerHTML = "";
+                socket.send(JSON.stringify({type:"connResponse",status:"disconnected",uname:sessionStorage.getItem("username")}));
+            };
+            divid.appendChild(btn);
+        }
+        else{
+            socket.send(JSON.stringify({type:"connResponse",status:"rejected",CurrentUser: msg.user, TargetUser: sessionStorage.getItem("username")}));
+        }
+    });
+}
+else if(msg.from === "server"&&msg.type === "ConnFail") {
+      const notif = document.getElementById("notif");
+      notif.style.display = "none";
+      overlay.style.display = "none";
+      customAlert(msg.text,(chk) => {
+          if(chk){
+              btnInUse.disabled = false;
+              const divid = document.getElementById("divid");
+              divid.innerHTML = "";
+          }
+      });
+  }
+else if(msg.from === "server"&&msg.type === "buttonEnable"){
+    btnInUse.disabled = false;
+  }
+else if(msg.type==="chatBackup"){
+    const divid = document.getElementById("divid");
+    msg.content.forEach(raw => {
+        const chatBubble = JSON.parse(raw);
+        const container = document.createElement("div");
+        const p = document.createElement("p");
+        container.style.display = "flex";
+        container.style.flexDirection = "column";
+        if(chatBubble.text===`${sessionStorage.getItem("username")} has joined`) return;
+        if(chatBubble.text.includes("welcome")&&!chatBubble.text.includes(`${sessionStorage.getItem("username")}`)) return;
+        if(chatBubble.type === "dateRecord"){
+        p.textContent = `${chatBubble.content}`;
+        p.className = "date";
+        }
+        if (chatBubble.from === sessionStorage.getItem("username")) {
+        p.textContent = `me: ${chatBubble.text}`;
+        p.classList.add("me");
+    }
+        else {
+            p.textContent = `${chatBubble.from}: ${chatBubble.text}`;
+            if (chatBubble.from === "server") {
+                p.classList.add("them","serverMsg");
+            } else {
+                p.classList.add("them","theirMsg");
+            }
+        }
+        container.appendChild(p);
+        divid.prepend(container);
+    });
+  }
+else if(msg.text&&msg.from){
+  const p = document.createElement("p");
+  const img = document.createElement("img");
+  const container = document.createElement("div");
+  container.style.display = "flex";
+  container.style.flexDirection = "column";
+  if(msg.imgResponse){
+      img.classList.add("them","theirMsgImg");
+      img.src = msg.imgResponse;
+      timeStamp(img);
+  }
+  p.textContent = "from " + msg.from + ":\n" + msg.text;
+    p.classList.add("them");
+    timeStamp(p)
+    if(msg.from === "server"){
+    p.classList.add("serverMsg");
+}
+   else{
+   container.style.padding = "15px";
+   p.classList.add("theirMsg");
+}
+  container.appendChild(img);
+  container.appendChild(p);
+       document.getElementById("divid").prepend(container);
+       document.getElementById("divid").scrollTop = document.getElementById("divid").scrollHeight;
+}
+  if(msg.from === "server"&&msg.type === "ConnAccept"){
+      isPrivateChat = true;
+      const divid = document.getElementById("divid");
+      divid.innerHTML = "";
+      const btn = document.createElement("button");
+      btn.title = "back";
+      btn.className = "btn";
+      btn.style.top = "2px";
+      btn.style.position = "fixed";
+      btn.className = "btn";
+      const I = document.createElement("i");
+      I.className = "fas fa-arrow-left";
+      btn.appendChild(I);
+      btn.onclick = () => {
+          isPrivateChat = false;
+          socket.send(JSON.stringify({type:"modeShift"}));
+          socket.send(JSON.stringify({type:"connResponse",status:"disconnected",uname:sessionStorage.getItem("username")}));
+          btnInUse.disabled = false;
+          divid.innerHTML = "";
+      };
+      divid.appendChild(btn);
+      const notif = document.getElementById("notif");
+      notif.style.display = "none";
+      overlay.style.display = "none";
+  }
+  if(msg.type === "imgList"){
+      const imageList = document.getElementById("imglst");
+      imageList.innerHTML = "";
+      const h1 = document.createElement("h1");
+      h1.style.fontFamily = "Inter, Sans-Serif"
+      h1.style.color = "white";
+      h1.textContent = "Images:";
+      imageList.appendChild(h1);
+      msg.data.forEach((item) => {
+          toggleIconImg.classList.add("glow-notify");
+          const container = document.createElement("div");
+          const img = document.createElement("img");
+          img.src = item;
+          img.style.maxWidth = "150px";
+          img.style.borderRadius = "10px";
+          img.style.margin = "8px 0";
+          img.classList.add("them");
+          img.style.alignSelf = "flex-start";
+          img.style.cursor = "pointer";
+          container.onclick = function () {
+              imgModal.style.display = "block";
+              modalImage.src = img.src;
+          };
+          container.style.display = "flex";
+          container.style.flexDirection = "column";
+          container.style.marginBottom = "5px";
+          container.appendChild(img);
+          imageList.appendChild(container);
+
+      });
+  }
+};
+</script>
+</body>
+</html>
